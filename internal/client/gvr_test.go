@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: Apache-2.0
+// Copyright Authors of K9s
+
 package client_test
 
 import (
@@ -46,7 +49,7 @@ func TestGVRCan(t *testing.T) {
 	}
 }
 
-func TestAsGVR(t *testing.T) {
+func TestGVR(t *testing.T) {
 	uu := map[string]struct {
 		gvr string
 		e   schema.GroupVersionResource
@@ -105,9 +108,9 @@ func TestGVRAsResourceName(t *testing.T) {
 		e   string
 	}{
 		"full":  {"apps/v1/deployments", "deployments.v1.apps"},
-		"core":  {"v1/pods", "pods.v1."},
-		"k9s":   {"users", "users.."},
-		"empty": {"", ".."},
+		"core":  {"v1/pods", "pods"},
+		"k9s":   {"users", "users"},
+		"empty": {"", ""},
 	}
 
 	for k := range uu {

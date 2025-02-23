@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: Apache-2.0
+// Copyright Authors of K9s
+
 package client
 
 import (
@@ -10,6 +13,8 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 )
+
+var NoGVR = GVR{}
 
 // GVR represents a kubernetes resource schema as a string.
 // Format is group/version/resources:subresource.
@@ -63,6 +68,10 @@ func (g GVR) FQN(n string) string {
 
 // AsResourceName returns a resource . separated descriptor in the shape of kind.version.group.
 func (g GVR) AsResourceName() string {
+	if g.g == "" {
+		return g.r
+	}
+
 	return g.r + "." + g.v + "." + g.g
 }
 
@@ -102,6 +111,15 @@ func (g GVR) GVR() schema.GroupVersionResource {
 	}
 }
 
+// GVSub returns group vervion sub path.
+func (g GVR) GVSub() string {
+	if g.G() == "" {
+		return g.V()
+	}
+
+	return g.G() + "/" + g.V()
+}
+
 // GR returns a full schema representation.
 func (g GVR) GR() *schema.GroupResource {
 	return &schema.GroupResource{
@@ -128,6 +146,11 @@ func (g GVR) R() string {
 // G returns the resource group name.
 func (g GVR) G() string {
 	return g.g
+}
+
+// IsDecodable checks if the k8s resource has a decodable view
+func (g GVR) IsDecodable() bool {
+	return g.GVK().Kind == "secrets"
 }
 
 // GVRs represents a collection of gvr.
